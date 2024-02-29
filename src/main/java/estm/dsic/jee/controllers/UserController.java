@@ -3,22 +3,21 @@ package estm.dsic.jee.controllers;
 
 import estm.dsic.jee.models.User;
 import estm.dsic.jee.services.UserService;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
 @Path("/users")
 public class UserController {
 
-    private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
+    @Inject UserService userService;
+   
+   
     @POST
     @Path("/signup")
     @Consumes(MediaType.APPLICATION_JSON)
     public void signUpUser(User user) {
+        System.out.println("\n\n\nthe function signUpUser is called in the controller..");
         userService.registerUser(user);
         // Optionally return some response indicating success
     }

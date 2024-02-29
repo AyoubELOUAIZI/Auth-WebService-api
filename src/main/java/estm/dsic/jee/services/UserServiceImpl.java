@@ -1,15 +1,30 @@
 package estm.dsic.jee.services;
 
+import java.io.Serializable;
+
 import estm.dsic.jee.data.UserRepository;
 import estm.dsic.jee.models.User;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
-public class UserServiceImpl implements UserService {
+@Named
+@SessionScoped
+public class UserServiceImpl implements UserService ,Serializable {
 
-    private final UserRepository userRepository;
+    //private final UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+     // No-argument constructor
+    //  public UserServiceImpl() {
+    //     this.userRepository = null; // or initialize it to a default implementation if needed
+    // }
+
+    // public UserServiceImpl(UserRepository userRepository) {
+    //     this.userRepository = userRepository;
+    // }
+
+    @Inject UserRepository userRepository;
+
 
     @Override
     public User getUserById(int id) {
