@@ -36,8 +36,9 @@ public class UserServiceImpl implements UserService, Serializable {
     }
 
     @Override
-    public boolean authenticateUser(String username, String password) {
-        // Implementation for user authentication
-        return false;
+    public User authenticateUser(String email, String password) {
+        // Find user by email and password
+        return userRepository.findByEmailAndPassword(email, password);
     }
+
 }

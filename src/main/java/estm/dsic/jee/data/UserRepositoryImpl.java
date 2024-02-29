@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.sql.DataSource;
+import java.sql.ResultSet;
 
 import estm.dsic.jee.models.User;
 import jakarta.annotation.Resource;
@@ -17,12 +18,6 @@ public class UserRepositoryImpl implements UserRepository, Serializable {
 
     @Resource(lookup = "jdbc/testAuthDatabase")
     private DataSource dataSource;
-
-    // private final DataSource dataSource;
-
-    // public UserRepositoryImpl(DataSource dataSource) {
-    // this.dataSource = dataSource;
-    // }
 
     @Override
     public User findById(int id) {
@@ -37,18 +32,56 @@ public class UserRepositoryImpl implements UserRepository, Serializable {
     }
 
     @Override
+    public User findByEmailAndPassword(String email, String password) {
+        String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, email);
+            statement.setString(2, password);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    User user = new User();
+                    user.setId(resultSet.getInt("id"));
+                    user.setUsername(resultSet.getString("username"));
+                    user.setEmail(resultSet.getString("email"));
+                    user.setPassword(resultSet.getString("password"));
+                    // Populate other user fields if needed
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            // Handle any SQL exceptions (e.g., logging, throwing custom exception)
+            e.printStackTrace();
+        }
+        return null; // Return null if user not found or an exception occurred
+    }
+
+    @Override
     public User findByEmail(String email) {
-        // Implementation to retrieve user by email from the database
-        return null;
+        String sql = "SELECT * FROM users WHERE email = ?";
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, email);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    User user = new User();
+                    user.setId(resultSet.getInt("id"));
+                    user.setUsername(resultSet.getString("username"));
+                    user.setEmail(resultSet.getString("email"));
+                    user.setPassword(resultSet.getString("password"));
+                    // Populate other user fields if needed
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            // Handle any SQL exceptions (e.g., logging, throwing custom exception)
+            e.printStackTrace();
+        }
+        return null; // Return null if user not found or an exception occurred
     }
 
     @Override
     public boolean save(User user) {
-        if (dataSource == null) {
-            System.err.println("DataSource is null. Ensure proper initialization.");
-            return false;
-        }
-
         String sql = "INSERT INTO users (email, username, password) VALUES (?, ?, ?)";
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {

@@ -7,6 +7,6 @@ public interface UserService {
     User getUserByUsername(String username);
     User getUserByEmail(String email);
     boolean registerUser(User user);
-    boolean authenticateUser(String username, String password);
+    User authenticateUser(String email, String password);
 }
 

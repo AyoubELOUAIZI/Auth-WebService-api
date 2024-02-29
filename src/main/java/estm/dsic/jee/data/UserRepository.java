@@ -5,6 +5,7 @@ import estm.dsic.jee.models.User;
 public interface UserRepository {
     User findById(int id);
     User findByUsername(String username);
+    User findByEmailAndPassword(String email, String password);
     User findByEmail(String email);
     boolean save(User user);
     void update(User user);
