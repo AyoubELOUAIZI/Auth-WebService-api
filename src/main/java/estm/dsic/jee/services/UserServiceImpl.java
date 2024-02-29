@@ -10,21 +10,10 @@ import jakarta.inject.Named;
 
 @Named
 @SessionScoped
-public class UserServiceImpl implements UserService ,Serializable {
+public class UserServiceImpl implements UserService, Serializable {
 
-    //private final UserRepository userRepository;
-
-     // No-argument constructor
-    //  public UserServiceImpl() {
-    //     this.userRepository = null; // or initialize it to a default implementation if needed
-    // }
-
-    // public UserServiceImpl(UserRepository userRepository) {
-    //     this.userRepository = userRepository;
-    // }
-
-    @Inject UserRepository userRepository;
-
+    @Inject
+    UserRepository userRepository;
 
     @Override
     public User getUserById(int id) {
@@ -42,8 +31,8 @@ public class UserServiceImpl implements UserService ,Serializable {
     }
 
     @Override
-    public void registerUser(User user) {
-        userRepository.save(user);
+    public boolean registerUser(User user) {
+        return userRepository.save(user);
     }
 
     @Override
@@ -52,4 +41,3 @@ public class UserServiceImpl implements UserService ,Serializable {
         return false;
     }
 }
-

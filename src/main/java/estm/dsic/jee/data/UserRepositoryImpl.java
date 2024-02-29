@@ -1,14 +1,9 @@
 package estm.dsic.jee.data;
 
-
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import estm.dsic.jee.models.User;
@@ -18,15 +13,15 @@ import jakarta.inject.Named;
 
 @Named
 @SessionScoped
-public class UserRepositoryImpl implements UserRepository,Serializable {
+public class UserRepositoryImpl implements UserRepository, Serializable {
 
     @Resource(lookup = "jdbc/testAuthDatabase")
     private DataSource dataSource;
 
-    //private final DataSource dataSource;
+    // private final DataSource dataSource;
 
     // public UserRepositoryImpl(DataSource dataSource) {
-    //     this.dataSource = dataSource;
+    // this.dataSource = dataSource;
     // }
 
     @Override
@@ -48,25 +43,24 @@ public class UserRepositoryImpl implements UserRepository,Serializable {
     }
 
     @Override
-    public void save(User user) {
-
-        System.out.println("\n\nDatabase : "+dataSource);
+    public boolean save(User user) {
         if (dataSource == null) {
             System.err.println("DataSource is null. Ensure proper initialization.");
-            return;
+            return false;
         }
 
         String sql = "INSERT INTO users (email, username, password) VALUES (?, ?, ?)";
         try (Connection connection = dataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, user.getEmail());
             statement.setString(2, user.getUsername());
             statement.setString(3, user.getPassword());
-            statement.executeUpdate();
-            System.out.println("\n\n\nUser has added ...... " + user);
+            int rowsInserted = statement.executeUpdate();
+            return rowsInserted > 0; // Return true if at least one row was inserted
         } catch (SQLException e) {
             // Handle any SQL exceptions (e.g., logging, throwing custom exception)
             e.printStackTrace();
+            return false; // Return false if an exception occurred
         }
     }
 
@@ -80,4 +74,3 @@ public class UserRepositoryImpl implements UserRepository,Serializable {
         // Implementation to delete a user from the database
     }
 }
-
